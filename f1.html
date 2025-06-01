@@ -14,19 +14,17 @@
 
     body {
       height: 100vh;
-      background: url('https://wallpaperaccess.com/full/4888990.jpg') no-repeat center center fixed;
-      background-size: cover;
+      background: linear-gradient(135deg, #003973, #E5E5BE);
       display: flex;
       align-items: center;
       justify-content: center;
-      backdrop-filter: blur(5px);
     }
 
     .login-container {
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, 0.6);
       padding: 2rem 2.5rem;
       border-radius: 20px;
-      box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
       width: 100%;
       max-width: 400px;
       animation: fadeIn 0.8s ease-in-out;
@@ -50,7 +48,7 @@
     .login-container button {
       width: 100%;
       padding: 0.8rem;
-      background: #e10600;
+      background: #0051ff;
       color: white;
       border: none;
       border-radius: 10px;
@@ -60,7 +58,7 @@
     }
 
     .login-container button:hover {
-      background: #ff1e1e;
+      background: #1a75ff;
     }
 
     @keyframes fadeIn {
@@ -75,7 +73,7 @@
     }
 
     .error {
-      color: red;
+      color: #ff4b4b;
       text-align: center;
       margin-top: 0.5rem;
     }
@@ -97,7 +95,7 @@
       const errorMsg = document.getElementById('error-msg');
 
       if (email === 'fraelvillegasplay8@gmail.com' && pass === 'Formula1TheBest_!') {
-        window.location.href = "/f1zone.html"; // Redirige si las credenciales son correctas
+        window.location.href = "/f1zone.html";
       } else {
         errorMsg.textContent = "Credenciales incorrectas.";
       }
