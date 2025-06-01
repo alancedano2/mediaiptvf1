@@ -1,91 +1,107 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>F1 Login</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Zona F1 - Acceso</title>
   <style>
-    body {
+    * {
       margin: 0;
-      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-      font-family: Arial, sans-serif;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      background: url('https://wallpaperaccess.com/full/4888990.jpg') no-repeat center center fixed;
+      background-size: cover;
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 100vh;
+      backdrop-filter: blur(5px);
     }
 
-    .login-box {
-      background: rgba(0, 0, 0, 0.85);
-      padding: 40px;
-      border-radius: 15px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.7);
+    .login-container {
+      background: rgba(0, 0, 0, 0.7);
+      padding: 2rem 2.5rem;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
       width: 100%;
       max-width: 400px;
-      color: white;
+      animation: fadeIn 0.8s ease-in-out;
     }
 
-    .login-box h2 {
+    .login-container h2 {
       text-align: center;
-      margin-bottom: 25px;
-    }
-
-    .login-box input {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-    }
-
-    .login-box button {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      background-color: #00aaff;
       color: white;
-      font-size: 1rem;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.3s;
+      margin-bottom: 1.5rem;
     }
 
-    .login-box button:hover {
-      background-color: #008fcc;
+    .login-container input {
+      width: 100%;
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+    }
+
+    .login-container button {
+      width: 100%;
+      padding: 0.8rem;
+      background: #e10600;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .login-container button:hover {
+      background: #ff1e1e;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .error {
-      color: #ff4d4d;
+      color: red;
       text-align: center;
-      margin-top: 10px;
-      display: none;
+      margin-top: 0.5rem;
     }
   </style>
 </head>
 <body>
-
-  <div class="login-box">
-    <h2>Zona F1 - Acceso</h2>
-    <input type="email" id="email" placeholder="Correo electrónico">
-    <input type="password" id="password" placeholder="Contraseña">
+  <div class="login-container">
+    <h2>Acceso Exclusivo F1</h2>
+    <input type="email" id="email" placeholder="Correo electrónico" required />
+    <input type="password" id="password" placeholder="Contraseña" required />
     <button onclick="login()">Entrar</button>
-    <div class="error" id="error-msg">Correo o contraseña incorrectos</div>
+    <div id="error-msg" class="error"></div>
   </div>
 
   <script>
     function login() {
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value.trim();
-      const error = document.getElementById("error-msg");
+      const email = document.getElementById('email').value;
+      const pass = document.getElementById('password').value;
+      const errorMsg = document.getElementById('error-msg');
 
-      if (email === "fraelvillegasplay8@gmail.com" && password === "Formula1TheBest_!") {
-        window.location.href = "f1-content.html"; // cambia esto por el HTML donde tengas la F1
+      if (email === 'fraelvillegasplay8@gmail.com' && pass === 'Formula1TheBest_!') {
+        window.location.href = "/f1zone.html"; // Redirige si las credenciales son correctas
       } else {
-        error.style.display = "block";
+        errorMsg.textContent = "Credenciales incorrectas.";
       }
     }
   </script>
-
 </body>
 </html>
