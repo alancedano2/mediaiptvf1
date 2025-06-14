@@ -1,163 +1,824 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Canales en Vivo</title>
-  <script src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Zona F1</title>
+  <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
+  <style>
+    :root {
+        --bg-color-light: linear-gradient(to right, #ffffff, #f0f0f0);
+        --bg-color-dark: linear-gradient(to right, #1f1c2c, #928dab);
+        --text-color-light: #333;
+        --text-color-dark: white;
+        --card-bg-light: #f9f9f9;
+        --card-bg-dark: rgba(0, 0, 0, 0.6);
+        --navbar-bg-light: #eee;
+        --navbar-bg-dark: #000;
+        --border-color-light: #ddd;
+        --border-color-dark: #555;
+    }
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0d1b2a;
-      color: white;
-    }
-    nav {
-      background: rgba(0,0,0,0.8);
-      padding: 15px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    nav img {
-      height: 40px;
-    }
-    .nav-links a {
-      margin-left: 20px;
-      color: white;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    #player {
-      width: 100%;
-      max-width: 900px;
-      height: 500px;
-      margin: 30px auto;
-      background-color: black;
-      border-radius: 12px;
-    }
-    .canales-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 20px;
-      padding: 20px;
-      max-width: 1200px;
-      margin: auto;
-    }
-    .canal-box {
-      background: #1b263b;
-      padding: 15px;
-      border-radius: 10px;
-      text-align: center;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-      transition: transform 0.2s;
-    }
-    .canal-box:hover {
-      transform: translateY(-5px);
-    }
-    .canal-box img {
-      width: 100px;
-      height: 100px;
-      object-fit: cover;
-      border-radius: 50%;
-      margin-bottom: 10px;
-      border: 3px solid #415a77;
-    }
-    .canal-box h3 {
-      margin: 10px 0;
-      color: #e0e1dd;
-    }
-    .canal-box button {
-      background: #007bff;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 16px;
-      transition: background 0.3s;
-    }
-    .canal-box button:hover {
-      background: #0056b3;
-    }
-  </style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg-color-dark);
+      color: var(--text-color-dark);
+      transition: background 0.3s, color 0.3s;
+    }
+
+    body.light-mode {
+        background: var(--bg-color-light);
+        color: var(--text-color-light);
+    }
+
+    /* Navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: var(--navbar-bg-dark);
+      padding: 10px 20px;
+      transition: background-color 0.3s;
+    }
+
+    body.light-mode .navbar {
+        background-color: var(--navbar-bg-light);
+    }
+
+    .navbar img {
+      height: 40px;
+    }
+
+    .navbar a {
+      display: flex;
+      align-items: center;
+      color: var(--text-color-dark); /* Color del texto del enlace en modo oscuro */
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+
+    body.light-mode .navbar a {
+        color: var(--text-color-light); /* Color del texto del enlace en modo claro */
+    }
+
+    .navbar a.return-link {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .navbar a.return-link img {
+        height: 20px;
+        vertical-align: middle;
+        margin-left: 5px;
+    }
+
+    /* Modo Oscuro/Claro Toggle */
+    .theme-switch {
+        cursor: pointer;
+        font-size: 1.2rem;
+        margin-left: 20px;
+        padding: 5px;
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    body.light-mode .theme-switch {
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    /* Video Player Container */
+    #player-container {
+      width: 90%;
+      max-width: 900px;
+      height: 500px;
+      margin: 30px auto;
+      background-color: black;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(225, 6, 0, 0.7);
+    }
+
+    /* Make the video.js player fill its container */
+    .video-js {
+        width: 100% !important;
+        height: 100% !important;
+        border-radius: 12px;
+    }
+
+    /* Channels Container */
+    .channels-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+      background-color: var(--card-bg-dark);
+      border-radius: 12px;
+      margin-bottom: 30px;
+      transition: background-color 0.3s;
+    }
+    body.light-mode .channels-container {
+        background-color: var(--card-bg-light);
+    }
+
+    .canal-box {
+      display: flex;
+      align-items: center;
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      transition: transform 0.2s ease-in-out, background-color 0.3s;
+    }
+    body.light-mode .canal-box {
+        background-color: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+
+    .canal-box:hover {
+      transform: translateY(-5px);
+    }
+
+    .canal-box img {
+      width: 60px;
+      height: 40px;
+      object-fit: contain;
+      margin-right: 10px;
+    }
+
+    .canal-box h3 {
+      margin: 0;
+      font-size: 1rem;
+      flex-grow: 1;
+    }
+
+    .canal-box button {
+      background-color: #e10600;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.2s ease-in-out;
+    }
+
+    .canal-box button:hover {
+      background-color: #ff3300;
+    }
+
+    /* Countdown Section */
+    .countdown-container {
+        text-align: center;
+        margin: 40px auto;
+        padding: 20px;
+        max-width: 800px;
+        background-color: var(--card-bg-dark);
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        transition: background-color 0.3s;
+    }
+    body.light-mode .countdown-container {
+        background-color: var(--card-bg-light);
+    }
+    .countdown-container h2 {
+        color: #e10600;
+        margin-bottom: 20px;
+    }
+    .countdown-timer {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        font-size: 2em;
+        font-weight: bold;
+    }
+    .countdown-timer div {
+        text-align: center;
+    }
+    .countdown-timer span {
+        display: block;
+        font-size: 0.5em;
+        font-weight: normal;
+        margin-top: 5px;
+    }
+
+    /* Championship Standings & Driver Profiles */
+    .content-sections {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 30px;
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 20px;
+    }
+
+    .section-card {
+        background-color: var(--card-bg-dark);
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        transition: background-color 0.3s;
+    }
+    body.light-mode .section-card {
+        background-color: var(--card-bg-light);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .section-card h2 {
+        color: #e10600;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .standings table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+    .standings th, .standings td {
+        border: 1px solid var(--border-color-dark);
+        padding: 8px;
+        text-align: left;
+        transition: border-color 0.3s;
+    }
+    body.light-mode .standings th, body.light-mode .standings td {
+        border: 1px solid var(--border-color-light);
+    }
+    .standings th {
+        background-color: #e10600;
+        color: white;
+    }
+
+    /* Driver Profiles */
+    .driver-profiles-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+    .driver-card {
+        text-align: center;
+        background-color: rgba(0, 0, 0, 0.4);
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        transition: background-color 0.3s;
+    }
+    body.light-mode .driver-card {
+        background-color: rgba(255, 255, 255, 0.7);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .driver-card img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 10px;
+        border: 2px solid #e10600;
+    }
+    .driver-card h3 {
+        margin: 5px 0;
+        color: #e10600;
+    }
+    .driver-card p {
+        font-size: 0.9em;
+        margin: 0;
+    }
+
+    /* Poll Section */
+    .poll-section {
+        margin: 40px auto;
+        padding: 20px;
+        max-width: 800px;
+        background-color: var(--card-bg-dark);
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        transition: background-color 0.3s;
+        text-align: center;
+    }
+    body.light-mode .poll-section {
+        background-color: var(--card-bg-light);
+    }
+    .poll-section h2 {
+        color: #e10600;
+        margin-bottom: 20px;
+    }
+    .poll-options label {
+        display: block;
+        margin-bottom: 10px;
+        cursor: pointer;
+    }
+    .poll-options input[type="radio"] {
+        margin-right: 10px;
+    }
+    .poll-section button {
+        background-color: #e10600;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        margin-top: 15px;
+    }
+    .poll-section button:hover {
+        background-color: #ff3300;
+    }
+    #poll-result {
+        margin-top: 20px;
+        font-weight: bold;
+        color: #00ff00; /* Green for success message */
+    }
+
+    /* Carrusel */
+    .carousel {
+      position: relative;
+      max-width: 800px;
+      margin: 40px auto;
+      overflow: hidden;
+      border-radius: 10px;
+      background-color: var(--card-bg-dark);
+      transition: background-color 0.3s;
+    }
+    body.light-mode .carousel {
+        background-color: var(--card-bg-light);
+    }
+
+    .carousel-slide {
+      display: none;
+      padding: 20px;
+    }
+
+    .carousel-slide.active {
+      display: block;
+    }
+
+    .carousel-slide h2 {
+      margin-top: 0;
+      color: #e10600;
+    }
+
+    .carousel-slide p {
+      margin-bottom: 10px;
+    }
+
+    .carousel-slide a {
+      display: inline-block;
+      padding: 10px 15px;
+      background-color: #e10600;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+
+    /* Schedule */
+    .schedule {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background-color: var(--card-bg-dark);
+      border-radius: 10px;
+      transition: background-color 0.3s;
+    }
+    body.light-mode .schedule {
+        background-color: var(--card-bg-light);
+    }
+
+    .schedule h2 {
+      text-align: center;
+      color: #e10600;
+    }
+
+    .schedule table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    .schedule th, .schedule td {
+      border: 1px solid var(--border-color-dark);
+      padding: 8px;
+      text-align: center;
+      transition: border-color 0.3s;
+    }
+    body.light-mode .schedule th, body.light-mode .schedule td {
+        border: 1px solid var(--border-color-light);
+    }
+
+    .schedule th {
+      background-color: #e10600;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .navbar {
+            flex-direction: column;
+            gap: 10px;
+        }
+        .navbar a.return-link {
+            justify-content: center;
+        }
+        #player-container {
+            height: 300px;
+            margin: 20px auto;
+        }
+        .countdown-timer {
+            flex-wrap: wrap;
+            font-size: 1.5em;
+        }
+        .driver-profiles-grid {
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        }
+    }
+    @media (max-width: 480px) {
+        .navbar {
+            padding: 10px;
+        }
+        .channels-container {
+            grid-template-columns: 1fr;
+        }
+        .canal-box {
+            flex-direction: column;
+            text-align: center;
+        }
+        .canal-box img {
+            margin-right: 0;
+            margin-bottom: 10px;
+        }
+        .navbar a.return-link img {
+            height: 18px;
+        }
+    }
+  </style>
 </head>
 <body>
-  <nav>
-    <img src="https://upload.wikimedia.org/wikipedia/commons/3/33/F1_logo.svg" alt="F1 Logo">
-    <div class="nav-links">
-      <a href="#">Inicio</a>
-      <a href="#">Canales</a>
-      <a href="#">Contacto</a>
-    </div>
-  </nav>
 
-  <div id="player"></div>
+  <div class="navbar">
+    <a href="#">
+      <img src="https://logos-world.net/wp-content/uploads/2023/12/F1-Logo.png" alt="F1 Logo">
+    </a>
+    <a href="https://mediaiptv.vercel.app/" class="return-link">
+      Volver a <img src="logo.png" alt="Logo Media IPTV">
+    </a>
+    <div class="theme-switch" onclick="toggleTheme()">☀️/🌙</div>
+  </div>
 
-  <div class="canales-container">
-    <div class="canal-box">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/Max_Verstappen_2024_Dutch_Grand_Prix_%28cropped%29.jpg" alt="Max Verstappen">
-      <h3>Max Verstappen</h3>
-      <button onclick="reproducirClappr('http://redbull.stream')">Reproducir</button>
-    </div>
+  <div id="player-container">
+    <video id="my-video" class="video-js vjs-default-skin" controls preload="auto" data-setup='{}'>
+      <source src="" type="application/x-mpegURL">
+    </video>
+  </div>
 
-    <div class="canal-box">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/e/e4/Charles-Leclerc.jpg" alt="Charles Leclerc">
-      <h3>Charles Leclerc</h3>
-      <button onclick="reproducirClappr('http://ferrari.stream')">Reproducir</button>
-    </div>
+  <div class="channels-container">
+    <div class="canal-box">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/e/e4/DAZN_F1_logo.svg" alt="DAZN F1 Logo" />
+      <h3>DAZN F1</h3>
+      <button onclick="cambiarStream('https://iptv-proxystreamverse.fraelvillegasplay9.workers.dev/?url=http://playtvpremium.xyz:8080/live/595991351780py/090325play/544213.m3u8')">Reproducir</button>
+    </div>
 
-    <div class="canal-box">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/1/18/Lewis_Hamilton_2022_Sao_Paulo_Grand_Prix_%2852498120773%29_%28cropped%29.jpg" alt="Lewis Hamilton">
-      <h3>Lewis Hamilton</h3>
-      <button onclick="reproducirClappr('http://mercedes.stream')">Reproducir</button>
-    </div>
+    <div class="canal-box">
+      <img src="http://schedulesdirect-api20141201-logos.s3.dualstack.us-east-1.amazonaws.com/stationLogos/s10179_dark_360w_270h.png" alt="ESPN USA Logo" />
+      <h3>ESPN USA</h3>
+      <button onclick="cambiarStream('https://iptv-proxystreamverse.fraelvillegasplay9.workers.dev/?url=http://playtvpremium.xyz:8080/live/595991351780py/090325play/840789.m3u8')">Reproducir</button>
+    </div>
 
-    <div class="canal-box">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/4/46/Fernando_Alonso_2023_Spanish_Grand_Prix.jpg" alt="Fernando Alonso">
-      <h3>Fernando Alonso</h3>
-      <button onclick="reproducirClappr('http://astonmartin.stream')">Reproducir</button>
-    </div>
+    <div class="canal-box">
+      <img src="http://schedulesdirect-api20141201-logos.s3.dualstack.us-east-1.amazonaws.com/stationLogos/s25595_dark_360w_270h.png" alt="ESPN Deportes Logo" />
+      <h3>ESPN Deportes</h3>
+      <button onclick="cambiarStream('https://iptv-proxystreamverse.fraelvillegasplay9.workers.dev/?url=http://playtvpremium.xyz:8080/live/595991351780py/090325play/878936.m3u8')">Reproducir</button>
+    </div>
 
-    <div class="canal-box">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/6/66/DAZN_Logo_Master.svg/2048px-DAZN_Logo_Master.svg.png" alt="DAZN">
-      <h3>DAZN</h3>
-      <button onclick="reproducirClappr('http://hidra.live:80/live/eufTQNgNXv/ojxBLcjY/335431.m3u8')">Reproducir</button>
-    </div>
+    <div class="canal-box">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/b/bf/Movistar_Formula_1.svg" alt="Movistar Formula 1 Logo" />
+      <h3>Movistar Formula 1</h3>
+      <button onclick="cambiarStream('https://iptv-proxystreamverse.fraelvillegasplay9.workers.dev/?url=http://playtvpremium.xyz:8080/live/595991351780py/090325play/437300.m3u8')">Reproducir</button>
+    </div>
 
-    <div class="canal-box">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/b/bc/KABC-TV-Logo-2021.png" alt="ABC 7">
-      <h3>ABC 7</h3>
-      <button onclick="reproducirClappr('http://fl1.moveonjoy.com/ABC_EAST/index.m3u8')">Reproducir</button>
-    </div>
+    <div class="canal-box">
+      <img src="https://yt3.googleusercontent.com/ytc/AIdro_kiEuPmeOVl-LKB42k9s2crSFOWaV8mLleSufLg1teuM20=s900-c-k-c0x00ffffff-no-rj" alt="Sky Sports F1 Logo" />
+      <h3>Sky Sports F1</h3>
+      <button onclick="cambiarStream('https://iptv-proxystreamverse.fraelvillegasplay9.workers.dev/?url=http://playtvpremium.xyz:8080/live/595991351780py/090325play/437301.m3u8')">Reproducir</button>
+    </div>
+  </div>
 
-    <div class="canal-box">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/7/70/DAZN_F1_logo.png" alt="DAZN F1">
-      <h3>DAZN F1</h3>
-      <button onclick="reproducirClappr('http://hidra.live:80/live/eufTQNgNXv/ojxBLcjY/335440.m3u8')">Reproducir</button>
-    </div>
+  <div class="countdown-container">
+    <h2>Próximo Gran Premio: Canadá</h2>
+    <div id="countdown-timer" class="countdown-timer">
+      <div><span id="days">00</span>Días</div>
+      <div><span id="hours">00</span>Horas</div>
+      <div><span id="minutes">00</span>Minutos</div>
+      <div><span id="seconds">00</span>Segundos</div>
+    </div>
+  </div>
 
-  </div>
+  <div class="content-sections">
+    <div class="section-card standings">
+      <h2>Clasificación de Pilotos 2025</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Pos.</th>
+            <th>Piloto</th>
+            <th>Puntos</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Max Verstappen</td><td>190</td></tr>
+          <tr><td>2</td><td>Lando Norris</td><td>160</td></tr>
+          <tr><td>3</td><td>Charles Leclerc</td><td>150</td></tr>
+          <tr><td>4</td><td>Carlos Sainz</td><td>130</td></tr>
+          <tr><td>5</td><td>Sergio Pérez</td><td>100</td></tr>
+          </tbody>
+      </table>
 
-  <script>
-    const playerContainer = document.getElementById('player');
-    let player = null;
+      <h2>Clasificación de Constructores 2025</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Pos.</th>
+            <th>Equipo</th>
+            <th>Puntos</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Red Bull Racing</td><td>290</td></tr>
+          <tr><td>2</td><td>Ferrari</td><td>280</td></tr>
+          <tr><td>3</td><td>McLaren</td><td>250</td></tr>
+          <tr><td>4</td><td>Mercedes</td><td>120</td></tr>
+          </tbody>
+      </table>
+      <p style="font-size: 0.8em; text-align: right; margin-top: 15px;">*Actualizado tras el GP de España</p>
+    </div>
 
-    function reproducirClappr(url) {
-      if (player) {
-        player.destroy();
-      }
-      player = new Clappr.Player({
-        source: url,
-        parent: playerContainer,
-        poster: 'https://via.placeholder.com/900x500?text=Cargando+Video', // Placeholder mientras carga
-        autoPlay: true,
-        height: '100%',
-        width: '100%'
-      });
-    }
-  </script>
+    <div class="section-card driver-profiles">
+      <h2>Pilotos Destacados</h2>
+      <div class="driver-profiles-grid">
+        <div class="driver-card">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/Max_Verstappen_2024_Dutch_Grand_Prix_%28cropped%29.jpg" alt="Max Verstappen">
+          <h3>Max Verstappen</h3>
+          <p>Red Bull Racing</p>
+          <p>3 veces Campeón Mundial</p>
+        </div>
+        <div class="driver-card">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e4/Charles-Leclerc.jpg" alt="Charles Leclerc">
+          <h3>Charles Leclerc</h3>
+          <p>Ferrari</p>
+          <p>Talento Monegasco</p>
+        </div>
+        <div class="driver-card">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/1/18/Lewis_Hamilton_2022_Sao_Paulo_Grand_Prix_%2852498120773%29_%28cropped%29.jpg" alt="Lewis Hamilton">
+            <h3>Lewis Hamilton</h3>
+            <p>Mercedes-AMG Petronas F1</p>
+            <p>7 veces Campeón Mundial</p>
+        </div>
+        <div class="driver-card">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/4/46/Fernando_Alonso_2023_Spanish_Grand_Prix.jpg" alt="Fernando Alonso">
+            <p>Aston Martin Aramco F1</p>
+            <p>2 veces Campeón Mundial</p>
+        </div>
+        </div>
+    </div>
+  </div>
+
+  <div class="poll-section">
+    <h2>¿Quién crees que ganará el próximo Gran Premio de Canadá?</h2>
+    <div class="poll-options">
+      <label><input type="radio" name="winner" value="Max Verstappen"> Max Verstappen</label>
+      <label><input type="radio" name="winner" value="Lando Norris"> Lando Norris</label>
+      <label><input type="radio" name="winner" value="Charles Leclerc"> Charles Leclerc</label>
+      <label><input type="radio" name="winner" value="Otro"> Otro</label>
+    </div>
+    <button onclick="submitPoll()">Votar</button>
+    <p id="poll-result"></p>
+  </div>
+
+
+  <div class="carousel">
+    <div class="carousel-slide active">
+      <h2>Gran Premio de España: Piastri en la pole</h2>
+      <p>Oscar Piastri logró la pole position en el GP de España, seguido por Lando Norris y Max Verstappen. McLaren domina el campeonato con un 1-2 en la parrilla.</p>
+      <a href="https://talksport.com/motorsport/3240411/spanish-grand-prix-start-time-uk-2025-qualifying-results/" target="_blank">Ver más</a>
+    </div>
+    <div class="carousel-slide">
+      <h2>Nuevo reglamento de alerones delanteros</h2>
+      <p>La FIA ha introducido un cambio en la regulación de los alerones delanteros, reduciendo la flexión permitida para igualar el rendimiento entre equipos.</p>
+      <a href="https://www.news.com.au/sport/motorsport/formula-one/game-changer-new-f1-rule-change-brought-in-for-spanish-grand-prix/news-story/64729f83962b09c121e34a5c3935db2c" target="_blank">Ver más</a>
+    </div>
+    <div class="carousel-slide">
+      <h2>Alonso abandona en Mónaco por fallo eléctrico</h2>
+      <p>Fernando Alonso se retiró del GP de Mónaco debido a una falla eléctrica en su monoplaza, perdiendo 160 caballos de potencia desde la vuelta 15.</p>
+      <a href="https://as.com/motor/formula_1/alonso-no-sale-del-pozo-esto-no-es-mala-suerte-n/" target="_blank">Ver más</a>
+    </div>
+  </div>
+
+  <div class="schedule">
+    <h2>Calendario F1 2025 – Próximos Eventos con Transmisión Confirmada</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Gran Premio</th>
+          <th>Circuito</th>
+          <th>Hora (ET)</th>
+          <th>Canal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>15 de junio</td>
+          <td>Canadá</td>
+          <td>Montreal</td>
+          <td>2:00 p.m.</td>
+          <td>ESPN</td>
+        </tr>
+        <tr>
+          <td>29 de junio</td>
+          <td>Austria</td>
+          <td>Red Bull Ring</td>
+          <td>9:00 a.m.</td>
+          <td>ESPN</td>
+        </tr>
+        <tr>
+          <td>6 de julio</td>
+          <td>Reino Unido</td>
+          <td>Silverstone</td>
+          <td>10:00 a.m.</td>
+          <td>ESPN</td>
+        </tr>
+        <tr>
+          <td>27 de julio</td>
+          <td>Bélgica</td>
+          <td>Spa-Francorchamps</td>
+          <td>9:00 a.m.</td>
+          <td>ESPN</td>
+        </tr>
+        <tr>
+          <td>3 de agosto</td>
+          <td>Hungría</td>
+          <td>Hungaroring</td>
+          <td>9:00 a.m.</td>
+          <td>ESPN</td>
+        </tr>
+        <tr>
+          <td>31 de agosto</td>
+          <td>Países Bajos</td>
+          <td>Zandvoort</td>
+          <td>9:00 a.m.</td>
+          <td>ESPN</td>
+        </tr>
+        <tr>
+          <td>7 de septiembre</td>
+          <td>Italia</td>
+          <td>Monza</td>
+          <td>9:00 a.m.</td>
+          <td>ESPN</td>
+        </tr>
+        <tr>
+          <td>21 de septiembre</td>
+          <td>Azerbaiyán</td>
+          <td>Bakú</td>
+          <td>7:00 a.m.</td>
+          <td>ESPN</td>
+        </tr>
+        <tr>
+          <td>5 de octubre</td>
+          <td>Singapur</td>
+          <td>Marina Bay</td>
+          <td>8:00 a.m.</td>
+          <td>ESPN</td>
+        </tr>
+        <tr>
+          <td>19 de octubre</td>
+          <td>Estados Unidos</td>
+          <td>Austin</td>
+          <td>3:00 p.m.</td>
+          <td>ESPN / ABC</td>
+        </tr>
+        <tr>
+          <td>26 de octubre</td>
+          <td>México</td>
+          <td>Ciudad de México</td>
+          <td>4:00 p.m.</td>
+          <td>ESPN</td>
+        </tr>
+        <tr>
+          <td>9 de noviembre</td>
+          <td>Brasil</td>
+          <td>São Paulo</td>
+          <td>12:00 p.m.</td>
+          <td>ESPN</td>
+        </tr>
+        <tr>
+          <td>22 de noviembre</td>
+          <td>Las Vegas</td>
+          <td>Las Vegas Strip</td>
+          <td>11:00 p.m.</td>
+          <td>ESPN / ABC</td>
+        </tr>
+        <tr>
+          <td>30 de noviembre</td>
+          <td>Catar</td>
+          <td>Lusail</td>
+          <td>11:00 a.m.</td>
+          <td>ESPN</td>
+        </tr>
+        <tr>
+          <td>7 de diciembre</td>
+          <td>Abu Dabi</td>
+          <td>Yas Marina</td>
+          <td>8:00 a.m.</td>
+          <td>ESPN</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@videojs/http-streaming@3.9.0/dist/videojs-http-streaming.min.js"></script>
+
+  <script>
+    let player = videojs('my-video');
+
+    // Función para cambiar el stream
+    function cambiarStream(url) {
+        player.src({
+            src: url,
+            type: 'application/x-mpegURL'
+        });
+        player.play();
+    }
+
+    // Carrusel automático
+    let slideIndex = 0;
+    const slides = document.querySelectorAll('.carousel-slide');
+
+    function showSlides() {
+      slides.forEach((slide, index) => {
+        slide.classList.remove('active');
+      });
+      slideIndex++;
+      if (slideIndex > slides.length) { slideIndex = 1; }
+      slides[slideIndex - 1].classList.add('active');
+      setTimeout(showSlides, 5000); // Cambia cada 5 segundos
+    }
+
+    showSlides();
+
+    // Lógica para la Cuenta Regresiva
+    const nextRaceDate = new Date("June 15, 2025 14:00:00 ET").getTime(); // Fecha y hora del GP de Canadá (ajusta a tu zona horaria real si no es ET)
+
+    const countdownFunction = setInterval(function() {
+      const now = new Date().getTime();
+      const distance = nextRaceDate - now;
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      document.getElementById("days").innerHTML = String(days).padStart(2, '0');
+      document.getElementById("hours").innerHTML = String(hours).padStart(2, '0');
+      document.getElementById("minutes").innerHTML = String(minutes).padStart(2, '0');
+      document.getElementById("seconds").innerHTML = String(seconds).padStart(2, '0');
+
+      if (distance < 0) {
+        clearInterval(countdownFunction);
+        document.getElementById("countdown-timer").innerHTML = "¡Carrera en Vivo!";
+      }
+    }, 1000);
+
+    // Lógica para el Modo Oscuro/Claro
+    function toggleTheme() {
+        document.body.classList.toggle('light-mode');
+        // Opcional: guardar preferencia del usuario en localStorage
+        if (document.body.classList.contains('light-mode')) {
+            localStorage.setItem('theme', 'light');
+        } else {
+            localStorage.setItem('theme', 'dark');
+        }
+    }
+    // Cargar la preferencia del usuario al cargar la página
+    document.addEventListener('DOMContentLoaded', () => {
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.classList.add('light-mode');
+        }
+    });
+
+    // Lógica para la Encuesta/Pronóstico
+    function submitPoll() {
+            const selectedOption = document.querySelector('input[name="winner"]:checked');
+            const pollResult = document.getElementById('poll-result');
+            if (selectedOption) {
+                pollResult.textContent = `¡Gracias por tu voto! Has elegido a ${selectedOption.value}.`;
+            } else {
+                pollResult.textContent = 'Por favor, selecciona una opción antes de votar.';
+            }
+        }
+  </script>
 
 </body>
 </html>
