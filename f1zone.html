@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Zona F1</title>
+  <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
   <style>
     body {
       margin: 0;
@@ -28,6 +29,94 @@
     .navbar a {
       display: flex;
       align-items: center;
+      color: white; /* Asegura que el texto del enlace sea blanco */
+      text-decoration: none; /* Quita el subrayado del enlace */
+      font-weight: bold;
+    }
+
+    .navbar a.return-link { /* Clase específica para el enlace de retorno */
+        display: flex;
+        align-items: center;
+        gap: 5px; /* Espacio entre el texto y la imagen */
+    }
+    .navbar a.return-link img {
+        height: 20px; /* Tamaño de la imagen del logo.png en el navbar */
+        vertical-align: middle;
+        margin-left: 5px; /* Pequeño margen para separar del texto "Volver a" */
+    }
+
+
+    /* Video Player Container */
+    #player-container {
+      width: 90%;
+      max-width: 900px;
+      height: 500px;
+      margin: 30px auto;
+      background-color: black;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(225, 6, 0, 0.7); /* Sombra con color F1 */
+    }
+
+    /* Make the video.js player fill its container */
+    .video-js {
+        width: 100% !important;
+        height: 100% !important;
+        border-radius: 12px;
+    }
+
+    /* Channels Container */
+    .channels-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+      background-color: rgba(0, 0, 0, 0.4);
+      border-radius: 12px;
+      margin-bottom: 30px;
+    }
+
+    .canal-box {
+      display: flex;
+      align-items: center;
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .canal-box:hover {
+      transform: translateY(-5px);
+    }
+
+    .canal-box img {
+      width: 60px;
+      height: 40px;
+      object-fit: contain;
+      margin-right: 10px;
+    }
+
+    .canal-box h3 {
+      margin: 0;
+      font-size: 1rem;
+      flex-grow: 1;
+    }
+
+    .canal-box button {
+      background-color: #e10600;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.2s ease-in-out;
+    }
+
+    .canal-box button:hover {
+      background-color: #ff3300;
     }
 
     /* Carrusel */
@@ -37,12 +126,12 @@
       margin: 40px auto;
       overflow: hidden;
       border-radius: 10px;
+      background-color: rgba(0, 0, 0, 0.6);
     }
 
     .carousel-slide {
       display: none;
       padding: 20px;
-      background-color: rgba(0, 0, 0, 0.6);
     }
 
     .carousel-slide.active {
@@ -51,6 +140,7 @@
 
     .carousel-slide h2 {
       margin-top: 0;
+      color: #e10600;
     }
 
     .carousel-slide p {
@@ -77,6 +167,7 @@
 
     .schedule h2 {
       text-align: center;
+      color: #e10600;
     }
 
     .schedule table {
@@ -98,17 +189,54 @@
 </head>
 <body>
 
-  <!-- Navbar -->
   <div class="navbar">
     <a href="#">
       <img src="https://logos-world.net/wp-content/uploads/2023/12/F1-Logo.png" alt="F1 Logo">
     </a>
-    <a href="https://mediaiptv.vercel.app/">
-      <img src="logo.png" alt="Media IPTV Logo">
+    <a href="https://mediaiptv.vercel.app/" class="return-link">
+      Volver a <img src="logo.png" alt="Logo Media IPTV">
     </a>
   </div>
 
-  <!-- Carrusel de noticias -->
+  <div id="player-container">
+    <video id="my-video" class="video-js vjs-default-skin" controls preload="auto" data-setup='{}'>
+      <source src="" type="application/x-mpegURL">
+    </video>
+  </div>
+
+  <div class="channels-container">
+    <div class="canal-box">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/e/e4/DAZN_F1_logo.svg" alt="DAZN F1 Logo" />
+      <h3>DAZN F1</h3>
+      <button onclick="cambiarStream('https://iptv-proxystreamverse.fraelvillegasplay9.workers.dev/?url=http://playtvpremium.xyz:8080/live/595991351780py/090325play/544213.m3u8')">Reproducir</button>
+    </div>
+
+    <div class="canal-box">
+      <img src="http://schedulesdirect-api20141201-logos.s3.dualstack.us-east-1.amazonaws.com/stationLogos/s10179_dark_360w_270h.png" alt="ESPN USA Logo" />
+      <h3>ESPN USA</h3>
+      <button onclick="cambiarStream('https://iptv-proxystreamverse.fraelvillegasplay9.workers.dev/?url=http://playtvpremium.xyz:8080/live/595991351780py/090325play/840789.m3u8')">Reproducir</button>
+    </div>
+
+    <div class="canal-box">
+      <img src="http://schedulesdirect-api20141201-logos.s3.dualstack.us-east-1.amazonaws.com/stationLogos/s25595_dark_360w_270h.png" alt="ESPN Deportes Logo" />
+      <h3>ESPN Deportes</h3>
+      <button onclick="cambiarStream('https://iptv-proxystreamverse.fraelvillegasplay9.workers.dev/?url=http://playtvpremium.xyz:8080/live/595991351780py/090325play/878936.m3u8')">Reproducir</button>
+    </div>
+
+    <div class="canal-box">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/b/bf/Movistar_Formula_1.svg" alt="Movistar Formula 1 Logo" />
+      <h3>Movistar Formula 1</h3>
+      <button onclick="cambiarStream('https://iptv-proxystreamverse.fraelvillegasplay9.workers.dev/?url=http://playtvpremium.xyz:8080/live/595991351780py/090325play/437300.m3u8')">Reproducir</button>
+    </div>
+
+    <div class="canal-box">
+      <img src="https://yt3.googleusercontent.com/ytc/AIdro_kiEuPmeOVl-LKB42k9s2crSFOWaV8mLleSufLg1teuM20=s900-c-k-c0x00ffffff-no-rj" alt="Sky Sports F1 Logo" />
+      <h3>Sky Sports F1</h3>
+      <button onclick="cambiarStream('https://iptv-proxystreamverse.fraelvillegasplay9.workers.dev/?url=http://playtvpremium.xyz:8080/live/595991351780py/090325play/437301.m3u8')">Reproducir</button>
+    </div>
+  </div>
+
+
   <div class="carousel">
     <div class="carousel-slide active">
       <h2>Gran Premio de España: Piastri en la pole</h2>
@@ -127,191 +255,140 @@
     </div>
   </div>
 
-  <!-- Calendario de eventos -->
-  <!-- Calendario de eventos -->
-<div class="schedule">
-  <h2>Calendario F1 2025 – Eventos con Transmisión Confirmada</h2>
-  <table>
-    <tr>
-      <th>Fecha</th>
-      <th>Gran Premio</th>
-      <th>Circuito</th>
-      <th>Hora (ET)</th>
-      <th>Canal</th>
-    </tr>
-    <tr>
-      <td>16 de marzo</td>
-      <td>Australia</td>
-      <td>Albert Park</td>
-      <td>12:00 a.m.</td>
-      <td>ESPN</td>
-    </tr>
-    <tr>
-      <td>23 de marzo</td>
-      <td>China</td>
-      <td>Shanghái</td>
-      <td>3:00 a.m.</td>
-      <td>ESPN</td>
-    </tr>
-    <tr>
-      <td>6 de abril</td>
-      <td>Japón</td>
-      <td>Suzuka</td>
-      <td>1:00 a.m.</td>
-      <td>ESPN</td>
-    </tr>
-    <tr>
-      <td>13 de abril</td>
-      <td>Baréin</td>
-      <td>Sakhir</td>
-      <td>11:00 a.m.</td>
-      <td>ESPN</td>
-    </tr>
-    <tr>
-      <td>20 de abril</td>
-      <td>Arabia Saudita</td>
-      <td>Yeda</td>
-      <td>1:00 p.m.</td>
-      <td>ESPN</td>
-    </tr>
-    <tr>
-      <td>4 de mayo</td>
-      <td>Miami</td>
-      <td>Miami Gardens</td>
-      <td>4:00 p.m.</td>
-      <td>ESPN / ABC</td>
-    </tr>
-    <tr>
-      <td>18 de mayo</td>
-      <td>Emilia-Romaña</td>
-      <td>Imola</td>
-      <td>9:00 a.m.</td>
-      <td>ESPN</td>
-    </tr>
-    <tr>
-      <td>25 de mayo</td>
-      <td>Mónaco</td>
-      <td>Montecarlo</td>
-      <td>9:00 a.m.</td>
-      <td>ESPN</td>
-    </tr>
-    <tr>
-      <td>1 de junio</td>
-      <td>España</td>
-      <td>Barcelona</td>
-      <td>9:00 a.m.</td>
-      <td>ESPN</td>
-    </tr>
-    <tr>
-      <td>15 de junio</td>
-      <td>Canadá</td>
-      <td>Montreal</td>
-      <td>2:00 p.m.</td>
-      <td>ESPN</td>
-    </tr>
-    <tr>
-      <td>29 de junio</td>
-      <td>Austria</td>
-      <td>Red Bull Ring</td>
-      <td>9:00 a.m.</td>
-      <td>ESPN</td>
-    </tr>
-    <tr>
-      <td>6 de julio</td>
-      <td>Reino Unido</td>
-      <td>Silverstone</td>
-      <td>10:00 a.m.</td>
-      <td>ESPN</td>
-    </tr>
-    <tr>
-      <td>27 de julio</td>
-      <td>Bélgica</td>
-      <td>Spa-Francorchamps</td>
-      <td>9:00 a.m.</td>
-      <td>ESPN</td>
-    </tr>
-    <tr>
-      <td>3 de agosto</td>
-      <td>Hungría</td>
-      <td>Hungaroring</td>
-      <td>9:00 a.m.</td>
-      <td>ESPN</td>
-    </tr>
-    <tr>
-      <td>31 de agosto</td>
-      <td>Países Bajos</td>
-      <td>Zandvoort</td>
-      <td>9:00 a.m.</td>
-      <td>ESPN</td>
-    </tr>
-    <tr>
-      <td>7 de septiembre</td>
-      <td>Italia</td>
-      <td>Monza</td>
-      <td>9:00 a.m.</td>
-      <td>ESPN</td>
-    </tr>
-    <tr>
-      <td>21 de septiembre</td>
-      <td>Azerbaiyán</td>
-      <td>Bakú</td>
-      <td>7:00 a.m.</td>
-      <td>ESPN</td>
-    </tr>
-    <tr>
-      <td>5 de octubre</td>
-      <td>Singapur</td>
-      <td>Marina Bay</td>
-      <td>8:00 a.m.</td>
-      <td>ESPN</td>
-    </tr>
-    <tr>
-      <td>19 de octubre</td>
-      <td>Estados Unidos</td>
-      <td>Austin</td>
-      <td>3:00 p.m.</td>
-      <td>ESPN / ABC</td>
-    </tr>
-    <tr>
-      <td>26 de octubre</td>
-      <td>México</td>
-      <td>Ciudad de México</td>
-      <td>4:00 p.m.</td>
-      <td>ESPN</td>
-    </tr>
-    <tr>
-      <td>9 de noviembre</td>
-      <td>Brasil</td>
-      <td>São Paulo</td>
-      <td>12:00 p.m.</td>
-      <td>ESPN</td>
-    </tr>
-    <tr>
-      <td>22 de noviembre</td>
-      <td>Las Vegas</td>
-      <td>Las Vegas Strip</td>
-      <td>11:00 p.m.</td>
-      <td>ESPN / ABC</td>
-    </tr>
-    <tr>
-      <td>30 de noviembre</td>
-      <td>Catar</td>
-      <td>Lusail</td>
-      <td>11:00 a.m.</td>
-      <td>ESPN</td>
-    </tr>
-    <tr>
-      <td>7 de diciembre</td>
-      <td>Abu Dabi</td>
-      <td>Yas Marina</td>
-      <td>8:00 a.m.</td>
-      <td>ESPN</td>
-    </tr>
-  </table>
-</div>
+  <div class="schedule">
+    <h2>Calendario F1 2025 – Próximos Eventos con Transmisión Confirmada</h2>
+    <table>
+      <tr>
+        <th>Fecha</th>
+        <th>Gran Premio</th>
+        <th>Circuito</th>
+        <th>Hora (ET)</th>
+        <th>Canal</th>
+      </tr>
+      <tr>
+        <td>15 de junio</td>
+        <td>Canadá</td>
+        <td>Montreal</td>
+        <td>2:00 p.m.</td>
+        <td>ESPN</td>
+      </tr>
+      <tr>
+        <td>29 de junio</td>
+        <td>Austria</td>
+        <td>Red Bull Ring</td>
+        <td>9:00 a.m.</td>
+        <td>ESPN</td>
+      </tr>
+      <tr>
+        <td>6 de julio</td>
+        <td>Reino Unido</td>
+        <td>Silverstone</td>
+        <td>10:00 a.m.</td>
+        <td>ESPN</td>
+      </tr>
+      <tr>
+        <td>27 de julio</td>
+        <td>Bélgica</td>
+        <td>Spa-Francorchamps</td>
+        <td>9:00 a.m.</td>
+        <td>ESPN</td>
+      </tr>
+      <tr>
+        <td>3 de agosto</td>
+        <td>Hungría</td>
+        <td>Hungaroring</td>
+        <td>9:00 a.m.</td>
+        <td>ESPN</td>
+      </tr>
+      <tr>
+        <td>31 de agosto</td>
+        <td>Países Bajos</td>
+        <td>Zandvoort</td>
+        <td>9:00 a.m.</td>
+        <td>ESPN</td>
+      </tr>
+      <tr>
+        <td>7 de septiembre</td>
+        <td>Italia</td>
+        <td>Monza</td>
+        <td>9:00 a.m.</td>
+        <td>ESPN</td>
+      </tr>
+      <tr>
+        <td>21 de septiembre</td>
+        <td>Azerbaiyán</td>
+        <td>Bakú</td>
+        <td>7:00 a.m.</td>
+        <td>ESPN</td>
+      </tr>
+      <tr>
+        <td>5 de octubre</td>
+        <td>Singapur</td>
+        <td>Marina Bay</td>
+        <td>8:00 a.m.</td>
+        <td>ESPN</td>
+      </tr>
+      <tr>
+        <td>19 de octubre</td>
+        <td>Estados Unidos</td>
+        <td>Austin</td>
+        <td>3:00 p.m.</td>
+        <td>ESPN / ABC</td>
+      </tr>
+      <tr>
+        <td>26 de octubre</td>
+        <td>México</td>
+        <td>Ciudad de México</td>
+        <td>4:00 p.m.</td>
+        <td>ESPN</td>
+      </tr>
+      <tr>
+        <td>9 de noviembre</td>
+        <td>Brasil</td>
+        <td>São Paulo</td>
+        <td>12:00 p.m.</td>
+        <td>ESPN</td>
+      </tr>
+      <tr>
+        <td>22 de noviembre</td>
+        <td>Las Vegas</td>
+        <td>Las Vegas Strip</td>
+        <td>11:00 p.m.</td>
+        <td>ESPN / ABC</td>
+      </tr>
+      <tr>
+        <td>30 de noviembre</td>
+        <td>Catar</td>
+        <td>Lusail</td>
+        <td>11:00 a.m.</td>
+        <td>ESPN</td>
+      </tr>
+      <tr>
+        <td>7 de diciembre</td>
+        <td>Abu Dabi</td>
+        <td>Yas Marina</td>
+        <td>8:00 a.m.</td>
+        <td>ESPN</td>
+      </tr>
+    </table>
+  </div>
 
+
+  <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@videojs/http-streaming@3.9.0/dist/videojs-http-streaming.min.js"></script>
 
   <script>
+    let player = videojs('my-video');
+
+    // Función para cambiar el stream
+    function cambiarStream(url) {
+        player.src({
+            src: url,
+            type: 'application/x-mpegURL'
+        });
+        player.play();
+    }
+
     // Carrusel automático
     let slideIndex = 0;
     const slides = document.querySelectorAll('.carousel-slide');
