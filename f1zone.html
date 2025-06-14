@@ -6,11 +6,30 @@
   <title>Zona F1</title>
   <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
   <style>
+    :root {
+        --bg-color-light: linear-gradient(to right, #ffffff, #f0f0f0);
+        --bg-color-dark: linear-gradient(to right, #1f1c2c, #928dab);
+        --text-color-light: #333;
+        --text-color-dark: white;
+        --card-bg-light: #f9f9f9;
+        --card-bg-dark: rgba(0, 0, 0, 0.6);
+        --navbar-bg-light: #eee;
+        --navbar-bg-dark: #000;
+        --border-color-light: #ddd;
+        --border-color-dark: #555;
+    }
+
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to right, #1f1c2c, #928dab);
-      color: white;
+      background: var(--bg-color-dark);
+      color: var(--text-color-dark);
+      transition: background 0.3s, color 0.3s;
+    }
+
+    body.light-mode {
+        background: var(--bg-color-light);
+        color: var(--text-color-light);
     }
 
     /* Navbar */
@@ -18,8 +37,13 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background-color: #000;
+      background-color: var(--navbar-bg-dark);
       padding: 10px 20px;
+      transition: background-color 0.3s;
+    }
+
+    body.light-mode .navbar {
+        background-color: var(--navbar-bg-light);
     }
 
     .navbar img {
@@ -29,22 +53,39 @@
     .navbar a {
       display: flex;
       align-items: center;
-      color: white; /* Asegura que el texto del enlace sea blanco */
-      text-decoration: none; /* Quita el subrayado del enlace */
+      color: var(--text-color-dark); /* Color del texto del enlace en modo oscuro */
+      text-decoration: none;
       font-weight: bold;
+      transition: color 0.3s;
     }
 
-    .navbar a.return-link { /* Clase específica para el enlace de retorno */
+    body.light-mode .navbar a {
+        color: var(--text-color-light); /* Color del texto del enlace en modo claro */
+    }
+
+    .navbar a.return-link {
         display: flex;
         align-items: center;
-        gap: 5px; /* Espacio entre el texto y la imagen */
+        gap: 5px;
     }
     .navbar a.return-link img {
-        height: 20px; /* Tamaño de la imagen del logo.png en el navbar */
+        height: 20px;
         vertical-align: middle;
-        margin-left: 5px; /* Pequeño margen para separar del texto "Volver a" */
+        margin-left: 5px;
     }
 
+    /* Modo Oscuro/Claro Toggle */
+    .theme-switch {
+        cursor: pointer;
+        font-size: 1.2rem;
+        margin-left: 20px;
+        padding: 5px;
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    body.light-mode .theme-switch {
+        background-color: rgba(0, 0, 0, 0.1);
+    }
 
     /* Video Player Container */
     #player-container {
@@ -54,7 +95,7 @@
       margin: 30px auto;
       background-color: black;
       border-radius: 12px;
-      box-shadow: 0 0 15px rgba(225, 6, 0, 0.7); /* Sombra con color F1 */
+      box-shadow: 0 0 15px rgba(225, 6, 0, 0.7);
     }
 
     /* Make the video.js player fill its container */
@@ -72,9 +113,13 @@
       padding: 20px;
       max-width: 900px;
       margin: 0 auto;
-      background-color: rgba(0, 0, 0, 0.4);
+      background-color: var(--card-bg-dark);
       border-radius: 12px;
       margin-bottom: 30px;
+      transition: background-color 0.3s;
+    }
+    body.light-mode .channels-container {
+        background-color: var(--card-bg-light);
     }
 
     .canal-box {
@@ -84,8 +129,13 @@
       padding: 10px;
       border-radius: 8px;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-      transition: transform 0.2s ease-in-out;
+      transition: transform 0.2s ease-in-out, background-color 0.3s;
     }
+    body.light-mode .canal-box {
+        background-color: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
 
     .canal-box:hover {
       transform: translateY(-5px);
@@ -119,6 +169,170 @@
       background-color: #ff3300;
     }
 
+    /* Countdown Section */
+    .countdown-container {
+        text-align: center;
+        margin: 40px auto;
+        padding: 20px;
+        max-width: 800px;
+        background-color: var(--card-bg-dark);
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        transition: background-color 0.3s;
+    }
+    body.light-mode .countdown-container {
+        background-color: var(--card-bg-light);
+    }
+    .countdown-container h2 {
+        color: #e10600;
+        margin-bottom: 20px;
+    }
+    .countdown-timer {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        font-size: 2em;
+        font-weight: bold;
+    }
+    .countdown-timer div {
+        text-align: center;
+    }
+    .countdown-timer span {
+        display: block;
+        font-size: 0.5em;
+        font-weight: normal;
+        margin-top: 5px;
+    }
+
+    /* Championship Standings & Driver Profiles */
+    .content-sections {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 30px;
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 20px;
+    }
+
+    .section-card {
+        background-color: var(--card-bg-dark);
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        transition: background-color 0.3s;
+    }
+    body.light-mode .section-card {
+        background-color: var(--card-bg-light);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .section-card h2 {
+        color: #e10600;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .standings table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+    .standings th, .standings td {
+        border: 1px solid var(--border-color-dark);
+        padding: 8px;
+        text-align: left;
+        transition: border-color 0.3s;
+    }
+    body.light-mode .standings th, body.light-mode .standings td {
+        border: 1px solid var(--border-color-light);
+    }
+    .standings th {
+        background-color: #e10600;
+        color: white;
+    }
+
+    /* Driver Profiles */
+    .driver-profiles-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+    .driver-card {
+        text-align: center;
+        background-color: rgba(0, 0, 0, 0.4);
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        transition: background-color 0.3s;
+    }
+    body.light-mode .driver-card {
+        background-color: rgba(255, 255, 255, 0.7);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .driver-card img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 10px;
+        border: 2px solid #e10600;
+    }
+    .driver-card h3 {
+        margin: 5px 0;
+        color: #e10600;
+    }
+    .driver-card p {
+        font-size: 0.9em;
+        margin: 0;
+    }
+
+    /* Poll Section */
+    .poll-section {
+        margin: 40px auto;
+        padding: 20px;
+        max-width: 800px;
+        background-color: var(--card-bg-dark);
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        transition: background-color 0.3s;
+        text-align: center;
+    }
+    body.light-mode .poll-section {
+        background-color: var(--card-bg-light);
+    }
+    .poll-section h2 {
+        color: #e10600;
+        margin-bottom: 20px;
+    }
+    .poll-options label {
+        display: block;
+        margin-bottom: 10px;
+        cursor: pointer;
+    }
+    .poll-options input[type="radio"] {
+        margin-right: 10px;
+    }
+    .poll-section button {
+        background-color: #e10600;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        margin-top: 15px;
+    }
+    .poll-section button:hover {
+        background-color: #ff3300;
+    }
+    #poll-result {
+        margin-top: 20px;
+        font-weight: bold;
+        color: #00ff00; /* Green for success message */
+    }
+
     /* Carrusel */
     .carousel {
       position: relative;
@@ -126,7 +340,11 @@
       margin: 40px auto;
       overflow: hidden;
       border-radius: 10px;
-      background-color: rgba(0, 0, 0, 0.6);
+      background-color: var(--card-bg-dark);
+      transition: background-color 0.3s;
+    }
+    body.light-mode .carousel {
+        background-color: var(--card-bg-light);
     }
 
     .carousel-slide {
@@ -161,8 +379,12 @@
       max-width: 800px;
       margin: 40px auto;
       padding: 20px;
-      background-color: rgba(0, 0, 0, 0.6);
+      background-color: var(--card-bg-dark);
       border-radius: 10px;
+      transition: background-color 0.3s;
+    }
+    body.light-mode .schedule {
+        background-color: var(--card-bg-light);
     }
 
     .schedule h2 {
@@ -177,13 +399,58 @@
     }
 
     .schedule th, .schedule td {
-      border: 1px solid #ddd;
+      border: 1px solid var(--border-color-dark);
       padding: 8px;
       text-align: center;
+      transition: border-color 0.3s;
+    }
+    body.light-mode .schedule th, body.light-mode .schedule td {
+        border: 1px solid var(--border-color-light);
     }
 
     .schedule th {
       background-color: #e10600;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .navbar {
+            flex-direction: column;
+            gap: 10px;
+        }
+        .navbar a.return-link {
+            justify-content: center;
+        }
+        #player-container {
+            height: 300px;
+            margin: 20px auto;
+        }
+        .countdown-timer {
+            flex-wrap: wrap;
+            font-size: 1.5em;
+        }
+        .driver-profiles-grid {
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        }
+    }
+    @media (max-width: 480px) {
+        .navbar {
+            padding: 10px;
+        }
+        .channels-container {
+            grid-template-columns: 1fr;
+        }
+        .canal-box {
+            flex-direction: column;
+            text-align: center;
+        }
+        .canal-box img {
+            margin-right: 0;
+            margin-bottom: 10px;
+        }
+        .navbar a.return-link img {
+            height: 18px;
+        }
     }
   </style>
 </head>
@@ -196,6 +463,7 @@
     <a href="https://mediaiptv.vercel.app/" class="return-link">
       Volver a <img src="logo.png" alt="Logo Media IPTV">
     </a>
+    <div class="theme-switch" onclick="toggleTheme()">☀️/🌙</div>
   </div>
 
   <div id="player-container">
@@ -236,6 +504,98 @@
     </div>
   </div>
 
+  <div class="countdown-container">
+    <h2>Próximo Gran Premio: Canadá</h2>
+    <div id="countdown-timer" class="countdown-timer">
+      <div><span id="days">00</span>Días</div>
+      <div><span id="hours">00</span>Horas</div>
+      <div><span id="minutes">00</span>Minutos</div>
+      <div><span id="seconds">00</span>Segundos</div>
+    </div>
+  </div>
+
+  <div class="content-sections">
+    <div class="section-card standings">
+      <h2>Clasificación de Pilotos 2025</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Pos.</th>
+            <th>Piloto</th>
+            <th>Puntos</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Max Verstappen</td><td>190</td></tr>
+          <tr><td>2</td><td>Lando Norris</td><td>160</td></tr>
+          <tr><td>3</td><td>Charles Leclerc</td><td>150</td></tr>
+          <tr><td>4</td><td>Carlos Sainz</td><td>130</td></tr>
+          <tr><td>5</td><td>Sergio Pérez</td><td>100</td></tr>
+          </tbody>
+      </table>
+
+      <h2>Clasificación de Constructores 2025</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Pos.</th>
+            <th>Equipo</th>
+            <th>Puntos</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Red Bull Racing</td><td>290</td></tr>
+          <tr><td>2</td><td>Ferrari</td><td>280</td></tr>
+          <tr><td>3</td><td>McLaren</td><td>250</td></tr>
+          <tr><td>4</td><td>Mercedes</td><td>120</td></tr>
+          </tbody>
+      </table>
+      <p style="font-size: 0.8em; text-align: right; margin-top: 15px;">*Actualizado tras el GP de España</p>
+    </div>
+
+    <div class="section-card driver-profiles">
+      <h2>Pilotos Destacados</h2>
+      <div class="driver-profiles-grid">
+        <div class="driver-card">
+          <img src="https://media.formula1.com/content/dam/fom-results/drivers/2024/max-verstappen.jpg" alt="Max Verstappen">
+          <h3>Max Verstappen</h3>
+          <p>Red Bull Racing</p>
+          <p>3 veces Campeón Mundial</p>
+        </div>
+        <div class="driver-card">
+          <img src="https://media.formula1.com/content/dam/fom-results/drivers/2024/charles-leclerc.jpg" alt="Charles Leclerc">
+          <h3>Charles Leclerc</h3>
+          <p>Ferrari</p>
+          <p>Talento Monegasco</p>
+        </div>
+        <div class="driver-card">
+            <img src="https://media.formula1.com/content/dam/fom-results/drivers/2024/lewis-hamilton.jpg" alt="Lewis Hamilton">
+            <h3>Lewis Hamilton</h3>
+            <p>Mercedes-AMG Petronas F1</p>
+            <p>7 veces Campeón Mundial</p>
+        </div>
+        <div class="driver-card">
+            <img src="https://media.formula1.com/content/dam/fom-results/drivers/2024/fernando-alonso.jpg" alt="Fernando Alonso">
+            <h3>Fernando Alonso</h3>
+            <p>Aston Martin Aramco F1</p>
+            <p>2 veces Campeón Mundial</p>
+        </div>
+        </div>
+    </div>
+  </div>
+
+  <div class="poll-section">
+    <h2>¿Quién crees que ganará el próximo Gran Premio de Canadá?</h2>
+    <div class="poll-options">
+      <label><input type="radio" name="winner" value="Max Verstappen"> Max Verstappen</label>
+      <label><input type="radio" name="winner" value="Lando Norris"> Lando Norris</label>
+      <label><input type="radio" name="winner" value="Charles Leclerc"> Charles Leclerc</label>
+      <label><input type="radio" name="winner" value="Otro"> Otro</label>
+    </div>
+    <button onclick="submitPoll()">Votar</button>
+    <p id="poll-result"></p>
+  </div>
+
 
   <div class="carousel">
     <div class="carousel-slide active">
@@ -258,118 +618,122 @@
   <div class="schedule">
     <h2>Calendario F1 2025 – Próximos Eventos con Transmisión Confirmada</h2>
     <table>
-      <tr>
-        <th>Fecha</th>
-        <th>Gran Premio</th>
-        <th>Circuito</th>
-        <th>Hora (ET)</th>
-        <th>Canal</th>
-      </tr>
-      <tr>
-        <td>15 de junio</td>
-        <td>Canadá</td>
-        <td>Montreal</td>
-        <td>2:00 p.m.</td>
-        <td>ESPN</td>
-      </tr>
-      <tr>
-        <td>29 de junio</td>
-        <td>Austria</td>
-        <td>Red Bull Ring</td>
-        <td>9:00 a.m.</td>
-        <td>ESPN</td>
-      </tr>
-      <tr>
-        <td>6 de julio</td>
-        <td>Reino Unido</td>
-        <td>Silverstone</td>
-        <td>10:00 a.m.</td>
-        <td>ESPN</td>
-      </tr>
-      <tr>
-        <td>27 de julio</td>
-        <td>Bélgica</td>
-        <td>Spa-Francorchamps</td>
-        <td>9:00 a.m.</td>
-        <td>ESPN</td>
-      </tr>
-      <tr>
-        <td>3 de agosto</td>
-        <td>Hungría</td>
-        <td>Hungaroring</td>
-        <td>9:00 a.m.</td>
-        <td>ESPN</td>
-      </tr>
-      <tr>
-        <td>31 de agosto</td>
-        <td>Países Bajos</td>
-        <td>Zandvoort</td>
-        <td>9:00 a.m.</td>
-        <td>ESPN</td>
-      </tr>
-      <tr>
-        <td>7 de septiembre</td>
-        <td>Italia</td>
-        <td>Monza</td>
-        <td>9:00 a.m.</td>
-        <td>ESPN</td>
-      </tr>
-      <tr>
-        <td>21 de septiembre</td>
-        <td>Azerbaiyán</td>
-        <td>Bakú</td>
-        <td>7:00 a.m.</td>
-        <td>ESPN</td>
-      </tr>
-      <tr>
-        <td>5 de octubre</td>
-        <td>Singapur</td>
-        <td>Marina Bay</td>
-        <td>8:00 a.m.</td>
-        <td>ESPN</td>
-      </tr>
-      <tr>
-        <td>19 de octubre</td>
-        <td>Estados Unidos</td>
-        <td>Austin</td>
-        <td>3:00 p.m.</td>
-        <td>ESPN / ABC</td>
-      </tr>
-      <tr>
-        <td>26 de octubre</td>
-        <td>México</td>
-        <td>Ciudad de México</td>
-        <td>4:00 p.m.</td>
-        <td>ESPN</td>
-      </tr>
-      <tr>
-        <td>9 de noviembre</td>
-        <td>Brasil</td>
-        <td>São Paulo</td>
-        <td>12:00 p.m.</td>
-        <td>ESPN</td>
-      </tr>
-      <tr>
-        <td>22 de noviembre</td>
-        <td>Las Vegas</td>
-        <td>Las Vegas Strip</td>
-        <td>11:00 p.m.</td>
-        <td>ESPN / ABC</td>
-      </tr>
-      <tr>
-        <td>30 de noviembre</td>
-        <td>Catar</td>
-        <td>Lusail</td>
-        <td>11:00 a.m.</td>
-        <td>ESPN</td>
-      </tr>
-      <tr>
-        <td>7 de diciembre</td>
-        <td>Abu Dabi</td>
-        <td>Yas Marina</td>
-        <td>8:00 a.m.</td>
-        <td>ESPN</td>
-      </tr>
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Gran Premio</th>
+          <th>Circuito</th>
+          <th>Hora (ET)</th>
+          <th>Canal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>15 de junio</td>
+          <td>Canadá</td>
+          <td>Montreal</td>
+          <td>2:00 p.m.</td>
+          <td>ESPN</td>
+        </tr>
+        <tr>
+          <td>29 de junio</td>
+          <td>Austria</td>
+          <td>Red Bull Ring</td>
+          <td>9:00 a.m.</td>
+          <td>ESPN</td>
+        </tr>
+        <tr>
+          <td>6 de julio</td>
+          <td>Reino Unido</td>
+          <td>Silverstone</td>
+          <td>10:00 a.m.</td>
+          <td>ESPN</td>
+        </tr>
+        <tr>
+          <td>27 de julio</td>
+          <td>Bélgica</td>
+          <td>Spa-Francorchamps</td>
+          <td>9:00 a.m.</td>
+          <td>ESPN</td>
+        </tr>
+        <tr>
+          <td>3 de agosto</td>
+          <td>Hungría</td>
+          <td>Hungaroring</td>
+          <td>9:00 a.m.</td>
+          <td>ESPN</td>
+        </tr>
+        <tr>
+          <td>31 de agosto</td>
+          <td>Países Bajos</td>
+          <td>Zandvoort</td>
+          <td>9:00 a.m.</td>
+          <td>ESPN</td>
+        </tr>
+        <tr>
+          <td>7 de septiembre</td>
+          <td>Italia</td>
+          <td>Monza</td>
+          <td>9:00 a.m.</td>
+          <td>ESPN</td>
+        </tr>
+        <tr>
+          <td>21 de septiembre</td>
+          <td>Azerbaiyán</td>
+          <td>Bakú</td>
+          <td>7:00 a.m.</td>
+          <td>ESPN</td>
+        </tr>
+        <tr>
+          <td>5 de octubre</td>
+          <td>Singapur</td>
+          <td>Marina Bay</td>
+          <td>8:00 a.m.</td>
+          <td>ESPN</td>
+        </tr>
+        <tr>
+          <td>19 de octubre</td>
+          <td>Estados Unidos</td>
+          <td>Austin</td>
+          <td>3:00 p.m.</td>
+          <td>ESPN / ABC</td>
+        </tr>
+        <tr>
+          <td>26 de octubre</td>
+          <td>México</td>
+          <td>Ciudad de México</td>
+          <td>4:00 p.m.</td>
+          <td>ESPN</td>
+        </tr>
+        <tr>
+          <td>9 de noviembre</td>
+          <td>Brasil</td>
+          <td>São Paulo</td>
+          <td>12:00 p.m.</td>
+          <td>ESPN</td>
+        </tr>
+        <tr>
+          <td>22 de noviembre</td>
+          <td>Las Vegas</td>
+          <td>Las Vegas Strip</td>
+          <td>11:00 p.m.</td>
+          <td>ESPN / ABC</td>
+        </tr>
+        <tr>
+          <td>30 de noviembre</td>
+          <td>Catar</td>
+          <td>Lusail</td>
+          <td>11:00 a.m.</td>
+          <td>ESPN</td>
+        </tr>
+        <tr>
+          <td>7 de diciembre</td>
+          <td>Abu Dabi</td>
+          <td>Yas Marina</td>
+          <td>8:00 a.m.</td>
+          <td>ESPN</td>
+        </tr>
+      </tbody>
     </table>
   </div>
 
@@ -404,6 +768,69 @@
     }
 
     showSlides();
+
+    // Lógica para la Cuenta Regresiva
+    const nextRaceDate = new Date("June 15, 2025 14:00:00 ET").getTime(); // Fecha y hora del GP de Canadá (ajusta a tu zona horaria real si no es ET)
+
+    const countdownFunction = setInterval(function() {
+      const now = new Date().getTime();
+      const distance = nextRaceDate - now;
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      document.getElementById("days").innerHTML = String(days).padStart(2, '0');
+      document.getElementById("hours").innerHTML = String(hours).padStart(2, '0');
+      document.getElementById("minutes").innerHTML = String(minutes).padStart(2, '0');
+      document.getElementById("seconds").innerHTML = String(seconds).padStart(2, '0');
+
+      if (distance < 0) {
+        clearInterval(countdownFunction);
+        document.getElementById("countdown-timer").innerHTML = "¡Carrera en Vivo!";
+      }
+    }, 1000);
+
+    // Lógica para el Modo Oscuro/Claro
+    function toggleTheme() {
+        document.body.classList.toggle('light-mode');
+        // Opcional: guardar preferencia del usuario en localStorage
+        if (document.body.classList.contains('light-mode')) {
+            localStorage.setItem('theme', 'light');
+        } else {
+            localStorage.setItem('theme', 'dark');
+        }
+    }
+    // Cargar la preferencia del usuario al cargar la página
+    document.addEventListener('DOMContentLoaded', () => {
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.classList.add('light-mode');
+        }
+    });
+
+    // Lógica para la Encuesta/Pronóstico
+    function submitPoll() {
+        const options = document.getElementsByName('winner');
+        let selectedValue = null;
+        for (const option of options) {
+            if (option.checked) {
+                selectedValue = option.value;
+                break;
+            }
+        }
+
+        const pollResult = document.getElementById('poll-result');
+        if (selectedValue) {
+            pollResult.textContent = `¡Gracias por tu voto! Has elegido a ${selectedValue}.`;
+            // Aquí NO se guarda el voto, es solo para demostración.
+            // Para guardar votos, necesitarías un backend.
+        } else {
+            pollResult.textContent = "Por favor, selecciona una opción.";
+            pollResult.style.color = "#ff6600"; // Orange for warning
+        }
+    }
+
   </script>
 
 </body>
