@@ -557,25 +557,25 @@
       <h2>Pilotos Destacados</h2>
       <div class="driver-profiles-grid">
         <div class="driver-card">
-          <img src="https://media.formula1.com/content/dam/fom-results/drivers/2024/max-verstappen.jpg" alt="Max Verstappen">
+          <img src="http://googleusercontent.com/image_collection/image_retrieval/6312804728365466489" alt="Max Verstappen">
           <h3>Max Verstappen</h3>
           <p>Red Bull Racing</p>
           <p>3 veces Campeón Mundial</p>
         </div>
         <div class="driver-card">
-          <img src="https://media.formula1.com/content/dam/fom-results/drivers/2024/charles-leclerc.jpg" alt="Charles Leclerc">
+          <img src="http://googleusercontent.com/image_collection/image_retrieval/8970593935357366318" alt="Charles Leclerc">
           <h3>Charles Leclerc</h3>
           <p>Ferrari</p>
           <p>Talento Monegasco</p>
         </div>
         <div class="driver-card">
-            <img src="https://media.formula1.com/content/dam/fom-results/drivers/2024/lewis-hamilton.jpg" alt="Lewis Hamilton">
+            <img src="http://googleusercontent.com/image_collection/image_retrieval/943699096144142304" alt="Lewis Hamilton">
             <h3>Lewis Hamilton</h3>
             <p>Mercedes-AMG Petronas F1</p>
             <p>7 veces Campeón Mundial</p>
         </div>
         <div class="driver-card">
-            <img src="https://media.formula1.com/content/dam/fom-results/drivers/2024/fernando-alonso.jpg" alt="Fernando Alonso">
+            <img src="http://googleusercontent.com/image_collection/image_retrieval/12134229543951018120" alt="Fernando Alonso">
             <h3>Fernando Alonso</h3>
             <p>Aston Martin Aramco F1</p>
             <p>2 veces Campeón Mundial</p>
@@ -811,27 +811,3 @@
 
     // Lógica para la Encuesta/Pronóstico
     function submitPoll() {
-        const options = document.getElementsByName('winner');
-        let selectedValue = null;
-        for (const option of options) {
-            if (option.checked) {
-                selectedValue = option.value;
-                break;
-            }
-        }
-
-        const pollResult = document.getElementById('poll-result');
-        if (selectedValue) {
-            pollResult.textContent = `¡Gracias por tu voto! Has elegido a ${selectedValue}.`;
-            // Aquí NO se guarda el voto, es solo para demostración.
-            // Para guardar votos, necesitarías un backend.
-        } else {
-            pollResult.textContent = "Por favor, selecciona una opción.";
-            pollResult.style.color = "#ff6600"; // Orange for warning
-        }
-    }
-
-  </script>
-
-</body>
-</html>
